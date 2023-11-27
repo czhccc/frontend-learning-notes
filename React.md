@@ -4880,6 +4880,34 @@ Hook 就是 JavaScript 函数，但是使用它们会有两个额外的规则：
 - 只能在**函数最外层**调用 Hook。不要在循环、条件判断或者子函数中调用。确保总是在 React 函数的最顶层调用，就能确保 Hook 在每一次渲染中都按照同样的顺序被调用，这让 React 能够在多次的 `useState` 和 `useEffect` 调用之间保持 hook 状态的正确。 
 - 只能在**函数组件 或 自定义的Hook**中调用 Hook。不要在普通的 JavaScript 函数中调用。遵循此规则，确保组件的状态逻辑在代码中清晰可见。 
 
+**函数组件的顶层调用，原因**：
+
+1. 钩子调用的一致性
+
+   React依赖于Hooks调用的顺序来正确地关联Hook的内部状态。如果Hooks被放在条件语句或循环中，会扰乱Hooks的顺序，打破React对Hook状态跟踪的基本要求。
+
+2. 组件的声明式逻辑
+
+   React鼓励使用声明式代码来描述UI，而将逻辑与UI分离。Hooks遵循这一原则，使组件的逻辑更加清晰和模块化。将Hook放在函数的顶层有助于保持逻辑的一致性和可预测性。
+
+3. 清晰的依赖关系
+
+   将Hook放在组件的顶层可以更清楚地展示组件的逻辑和依赖关系。例如，使用`useEffect`时，依赖数组明确指示了Effect的依赖项，这有助于开发者理解和维护代码。
+
+4. 可维护性和可调试性
+
+   一致的Hook调用顺序简化了组件的状态管理，使得代码更容易维护和调试。如果Hooks的调用位置和次序随着组件状态或渲染路径的改变而变化，将大大增加理解和调试组件的复杂性。
+
+5. 自定义Hook的设计
+
+   自定义Hook允许你重用一些带有状态逻辑的代码。为了使这些逻辑在不同组件之间正确地共享和重用，必须保证所有的标准Hook都遵循相同的调用规则。
+
+### 总结
+
+React Hook 必须写在函数组件的顶层，这是为了保证Hook的状态和生命周期能够正确且一致地与React的渲染和更新机制配合工作。这样的设计有助于保持代码的清晰、一致和易于维护。
+
+
+
 可以使用 [`eslint-plugin-react-hooks`](https://www.npmjs.com/package/eslint-plugin-react-hooks) 的 ESLint 插件来强制执行这两条规则：
 
 ```javascript
@@ -8609,7 +8637,62 @@ ReactDOM.render(
   4. **性能考虑**：在大型应用中，不合理的状态更新可能会导致性能问题。
   5. **不可变性的维护**：Redux 要求状态是不可变的，维护这种不可变性可能在某些情况下变得复杂和易出错。
 
-- 
+- 在Vue3中，实现按钮权限控制可以使用自定义指令，那么在React中要如何实现
+
+  1. 条件渲染
+
+  ```jsx
+  const MyComponent = ({ userPermission }) => {
+    const hasPermission = userPermission === 'admin'; // 权限检查逻辑
+    return (
+      <div>
+        {hasPermission && <button>只有管理员可见的按钮</button>}
+      </div>
+    );
+  };
+  ```
+
+  ### 2. 高阶组件（Higher-Order Component, HOC）
+
+  ```jsx
+  function withPermission(WrappedComponent, requiredPermission) {
+    return function(props) {
+      const userPermission = /* 获取用户权限逻辑 */;
+      if (userPermission === requiredPermission) {
+        return <WrappedComponent {...props} />;
+      } else {
+        return null; // 或返回一个无权限提示
+      }
+    };
+  }
+  
+  const AdminButton = withPermission(() => <button>只有管理员可见的按钮</button>, 'admin');
+  ```
+
+  ### 3. 自定义Hook
+
+  在React中，你也可以通过自定义Hook来封装权限检查逻辑。
+
+  ```jsx
+  function usePermission(requiredPermission) {
+    const userPermission = /* 获取用户权限逻辑 */;
+    return userPermission === requiredPermission;
+  }
+  
+  const MyComponent = () => {
+    const hasPermission = usePermission('admin');
+  
+    return (
+      <div>
+        {hasPermission && <button>只有管理员可见的按钮</button>}
+      </div>
+    );
+  };
+  ```
+
+  ### 4. 上下文（Context）
+
+  如果权限是整个应用中共享的，可以使用React的Context API在应用的顶层设置权限，然后在需要的地方通过Context消费这些权限信息。
 
 - 
 
