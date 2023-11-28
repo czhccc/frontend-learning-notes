@@ -1103,7 +1103,7 @@ new Promise((resolve, reject) => {
 )
 ```
 
-## 自定义Promise（自实现）
+## 自定义Promise（自实现）（未完，看coderwhy公众号）
 
 ### 第一步
 
