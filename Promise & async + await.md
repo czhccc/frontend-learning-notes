@@ -1375,6 +1375,10 @@ then(onFulfilled, onRejected) {
 
 `async`/`await` 是简化异步编程的一种语法糖，基于 Promises 和 Generators。
 
+可以将await关键字后面执行的代码，看作是包裹在(resolve, reject) => {} 中的代码
+
+await的下一条语句，可以看作是then(res => {}) 中的代码
+
 ### Generators
 
 Generator 是 ES6 引入的一种特殊类型的函数，可以暂停和恢复执行。通过 `function*` 关键字定义，使用 `yield` 关键字来暂停执行。

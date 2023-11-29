@@ -418,18 +418,105 @@
   }
   ```
 
-  
+- null和undefined的异同点有哪些
+
+  **相同点**
+
+  - 1、都是空类型
+  - 2、转布尔值都是false，都是假值
+  - 3、null == undefined 为 true
+
+  **不同点**
+
+  - 1、typeof，前者为object，后者为undefined
+  - 2、null转数字为0，undefined转数字为NaN
+  - 3、null === undefined 为 false
+
+- 如何判断数据类型
+
+  - `typeof`：能判断string、number、undefined、boolean、function、object（null是object）
+  - `Object.prototype.toString.call()`：能判断大部分数据类型
+  - `instanceOf`
+
+- 为什么typeof null 是object
+
+  不同数据类型底层都是用二进制来表示的，二进制前三位为`000`则会被判断为object，而null二进制全是0，所以被判断成object
+
+- 双等号左右两边的转换规则
+
+  - 1、null == undefined 为 true
+  - 2、如果有一个操作数是布尔值，则在比较相等性之前先将其转换为数值——false转换为0，而true转换为1；
+  - 3、如果一个操作数是字符串，另一个操作数是数值，在比较相等性之前先将字符串转换为数值
+  - 4、如果一个操作数是对象，另一个操作数不是，则调用对象的toString()方法，用得到的基本类型值按照前面的规则进行比较
+
+- undefined >= undefined 为什么是 false
+
+  隐式转换，变成`NaN >= NaN`，`NaN`不等于自身也不大于自身
+
+- null >= null 为什么是 true
+
+  隐式转换，变成`0 >= 0`，为true
+
+- 0.1 + 0.2 === 0.3，对吗
+
+  不对，JavaScript存在`精度丢失`问题，由于有些小数无法用二进制表示，所以只能取近似值，解决方法有：
+
+  - 先转大数，再变小数
+  - 使用`toFixed`
+
+- 绑定点击事件有几种方式
+
+  三种
+
+  - `xxx.onclick = function (){}`
+  - `<xxx onclick=""></xxx>`
+  - `xxx.addEventListener('click', function(){}, false)`
 
 - 
 
-- 
+  ### 数组的常用方法有哪些
 
-- 
+- | 方法    | 作用                           | 是否影响原数组 |
+  | :------ | :----------------------------- | :------------- |
+  | push    | 在数组后添加元素，返回长度     | ✅              |
+  | pop     | 删除数组最后一项，返回被删项   | ✅              |
+  | shift   | 删除数组第一项，返回被删项     | ✅              |
+  | unshift | 数组开头添加元素，返回长度     | ✅              |
+  | reserve | 反转数组，返回数组             | ✅              |
+  | sort    | 排序数组，返回数组             | ✅              |
+  | splice  | 截取数组，返回被截取部分       | ✅              |
+  | join    | 将数组变字符串，返回字符串     | ❌              |
+  | concat  | 连接数组                       | ❌              |
+  | map     | 相同规则处理数组项，返回新数组 | ❌              |
+  | forEach | 遍历数组                       | ❌              |
+  | filter  | 过滤数组项，返回符合条件的数组 | ❌              |
+  | every   | 每一项符合规则才返回true       | ❌              |
+  | some    | 只要有一项符合规则就返回true   | ❌              |
+  | reduce  | 接受上一个return和数组下一项   | ❌              |
+  | flat    | 数组扁平化                     | ❌              |
+  | slice   | 截取数组，返回被截取区间       | ❌              |
 
-- 
+- Math的常用方法有哪些？
 
-- 
+  | 方法                | 作用            |
+  | :------------------ | :-------------- |
+  | Math.max(...arr)    | 取arr中的最大值 |
+  | Math.min(...arr)    | 取arr中的最小值 |
+  | Math.ceil(小数)     | 小数向上取整    |
+  | Math.floor(小数)    | 小数向下取整    |
+  | Math.round(小数)    | 小数四舍五入    |
+  | Math.sqrt(num)      | 对num进行开方   |
+  | Math.pow(num, m)    | 对num取m次幂    |
+  | Math.random() * num | 取0-num的随机数 |
 
-- 
+- BOM 和 DOM 的关系
+
+  **BOM**全称Browser Object Model，即浏览器对象模型，主要处理浏览器窗口和框架。
+
+  DOM全称Document Object Model，即文档对象模型，是 HTML 和XML 的应用程序接口（API），遵循W3C 的标准，所有浏览器公共遵守的标准。
+
+  JS是通过访问**BOM**（Browser Object Model）对象来访问、控制、修改客户端(浏览器)，由于**BOM**的window包含了document，window对象的属性和方法是直接可以使用而且被感知的，因此可以直接使用window对象的document属性，通过document属性就可以访问、检索、修改XHTML文档内容与结构。因为document对象又是DOM的根节点。
+
+  可以说，BOM包含了DOM(对象)，浏览器提供出来给予访问的是BOM对象，从BOM对象再访问到DOM对象，从而js可以操作浏览器以及浏览器读取到的文档。
 
 - 
