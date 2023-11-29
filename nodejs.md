@@ -60,3 +60,19 @@ const message3 = buffer4.toString('utf16le') // 进行解码，可以传入解�
 console.log(message3) // “你好啊”
 ```
 
+## 事件队列
+
+事件循环像是一个桥梁，连接应用程序JS代码和系统调用：
+
+- 文件IO、数据库、网络IO、定时器、子进程，在完成对应的操作后，都会将对应的结果和回调函数放到事件循环（任务队列中）
+- 事件循环会不断的从任务队列中取出对应的事件（回调函数）来执行
+
+在node中，一次完整的事件循环Tick分成很多歌阶段：
+
+- 定时器（Timers）：本阶段执行已经被setTimeout()和setInterval()的调度回调函数
+- 待定回调（Pending Callback）：对某些系统操作（如TCP错误类型）执行回调，比如TCP连接时收到ECONNREFUSED
+- idle，prepare：仅系统内部使用
+- 轮询（Poll）：检索新的I/O事件；执行与I/O相关的回调【相比而言，这个阶段会非常长，因为node想要I/O事件能尽可能早地响应；甚至有I/O事件是会进行阻塞】
+- 检测：setImmediate() 回调函数在这里执行
+- 关闭的回调函数：一些关闭的回调函数，如：socket.on('close'm ...)
+
