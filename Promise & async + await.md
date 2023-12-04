@@ -1103,6 +1103,103 @@ new Promise((resolve, reject) => {
 )
 ```
 
+## unhandledrejection
+
+`unhandledrejection` 事件是一个非常重要的前端错误监控机制，专门用于处理在 Promise 中未被捕获的拒绝（即未处理的 rejected 状态）。在现代的前端开发中，Promise 被广泛用于处理异步操作，而`unhandledrejection`事件则提供了一种机制来捕捉和处理那些在 Promise 链中被忽略的错误。
+
+**触发条件**：当一个 Promise 被拒绝（reject），并且这个拒绝没有相应的拒绝处理函数（即`.catch()`或在构造函数中的第二个参数）时，`unhandledrejection`事件会在全局对象（通常是`window`）上触发
+
+**事件对象**：事件处理器会接收到一个事件对象，这个对象包含有关未处理拒绝的信息，主要属性包括：
+
+- `promise`：触发拒绝的 Promise 对象。
+- `reason`：Promise 被拒绝的原因，通常是一个错误对象或异常信息。
+
+**使用**：
+
+```js
+// errorHandler.js
+
+function handleUnhandledRejection(event) {
+  console.error('未处理的 Promise 拒绝:', event.reason);
+  // 这里可以加入错误上报逻辑
+}
+
+function setupErrorHandling() {
+  window.addEventListener('unhandledrejection', handleUnhandledRejection);
+}
+
+export default setupErrorHandling;
+```
+
+```js
+// Vue3
+import { createApp } from 'vue';
+import App from './App.vue';
+import setupErrorHandling from './errorHandler';
+
+// 设置全局错误处理
+setupErrorHandling();
+
+// 创建并挂载 Vue 应用
+createApp(App).mount('#app');
+```
+
+```js
+// React
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
+import setupErrorHandling from './errorHandler';
+
+// 设置全局错误处理
+setupErrorHandling();
+
+// 渲染 React 应用
+ReactDOM.render(<App />, document.getElementById('root'));
+```
+
+即，在框架中，仍然是在window上添加 unhandledrejection，只是将其抽到一个单独的文件中
+
+**示例 1：API 请求错误**
+
+在进行异步 API 请求时，如果没有适当地处理拒绝（reject）状态，就可能会触发 `unhandledrejection`。
+
+```js
+javascriptCopy codefetch('https://some-nonexistent-api.com/data')
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  // 这里故意省略了 .catch()，所以如果发生错误，会触发 unhandledrejection
+```
+
+**示例 2：异步函数中的错误**
+
+在异步函数（async function）中，如果使用 `await` 等待一个会被拒绝的 Promise，而没有相应的错误处理机制（如 try-catch），同样会触发 `unhandledrejection`。
+
+```js
+javascriptCopy codeasync function fetchData() {
+  let response = await fetch('https://some-nonexistent-api.com/data');
+  let data = await response.json();
+  // 如果 fetch 失败，上面的 await 将会抛出一个未被捕获的异常
+}
+
+fetchData(); // 调用该函数，没有捕获可能出现的异常
+```
+
+**示例 3：显式的 Promise 拒绝**
+
+在创建 Promise 时，如果显式地调用 `reject` 函数，并且这个拒绝没有被 `.catch()` 或 `try-catch` 捕获，也会触发 `unhandledrejection`。
+
+```js
+javascriptCopy codenew Promise((resolve, reject) => {
+  reject(new Error('Something went wrong'));
+  // 这里直接 reject 了，但没有相应的 catch 来处理这个拒绝
+});
+```
+
 ## 自定义Promise（自实现）（未完，看coderwhy公众号）
 
 ### 第一步
