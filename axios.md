@@ -1118,3 +1118,6 @@ axios.interceptors.response.use(response => {
 */
 ```
 
+## 源码
+
+[准备工作 | axios源码深入解读 (linjiafu.top)](http://axios.linjiafu.top/analysis/01-prepare.html#说明)
